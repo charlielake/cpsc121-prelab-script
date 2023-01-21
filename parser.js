@@ -1,5 +1,6 @@
 const GRADESCOPE_HEADERS = {
-	Id: 'Name',
+	FirstName: 'First Name',
+    LastName: 'Last Name',
 	TotalScore: 'Total Score',
 	Status: 'Status'
 }
@@ -36,10 +37,11 @@ function submitForm() {
 }
 
 function mapPrelabGradeData(gradesArray) {
+    console.log(gradesArray)
 	// populate map with [ID, prelab grade] pairs if it's graded
 	gradesArray.forEach((row) => {
 		if (row[GRADESCOPE_HEADERS.Status] == 'Graded') {
-			preLabGradesMap.set(row[GRADESCOPE_HEADERS.Id], row[GRADESCOPE_HEADERS.TotalScore]);
+			preLabGradesMap.set(row[GRADESCOPE_HEADERS.FirstName] + " " + row[GRADESCOPE_HEADERS.LastName], row[GRADESCOPE_HEADERS.TotalScore]);
 		}
 	});
 	outputResult();
@@ -66,16 +68,26 @@ function outputResult() {
 	row.insertCell(-1).append(idTable);
 	row.insertCell(-1).append(gradeTable);
 
+    
+
 	idArray.forEach((id) => {
+        // format incoming name as it will be in the format "FirstName\tLastName"
+        // replace tab with space character
+        let name = id.split("\t")
+        name = name[0] + " " + name[1]
+
 		// insert cells with id to new row in idTable
-		idTable.insertRow(-1).insertCell(-1).innerHTML = id;
+		idTable.insertRow(-1).insertCell(-1).innerHTML = name
 
 		// insert cell with grade to new row in gradeTable
-		if (preLabGradesMap.has(id)) {
-			gradeTable.insertRow(-1).insertCell(-1).innerHTML = preLabGradesMap.get(id);
+		if (preLabGradesMap.has(name)) {
+            gradeTable.insertRow(-1).insertCell(-1).innerHTML = preLabGradesMap.get(name);
 		} else {
 			gradeTable.insertRow(-1).insertCell(-1).innerHTML = '---';
 		}
 	});
 }
 
+// Need to change idArray parsing at the end to match id using two IDs - First and Last name
+
+// Change function mapPrelabGradeData(gradesArray) to make map of First Name and Last Name
